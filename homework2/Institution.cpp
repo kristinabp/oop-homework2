@@ -16,7 +16,12 @@ void Institution::createId()
 Institution::Institution(): institution_payer(Payer())
 {
 	this->institution_name = "";
+	this->count_institutions++;
 	createId();
+}
+
+Institution::Institution(const std::string & name, const Payer & payer): institution_name(name), institution_payer(payer)
+{
 }
 
 Institution::Institution(const std::string& name)
@@ -39,26 +44,4 @@ Institution & Institution::operator=(const Institution & other)
 	}
 
 	return *this;
-}
-
-const std::string Institution::getName() const
-{
-	return this->institution_name;
-}
-
-const std::string Institution::getId() const
-{
-	return this->institution_id;
-}
-
-Payer Institution::getPayer() const
-{
-	return this->institution_payer;
-}
-
-void Institution::print() const
-{
-	std::cout << this->institution_name << ' ';
-	this->institution_payer.print();
-	std::cout << ' ' << this->institution_id << '\n';
 }

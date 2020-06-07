@@ -8,20 +8,17 @@ void Group::create_group_id()
 Group::Group():Institution(), isValid(false)
 {
 	this->group_id = 0;
-	this->count_institutions++;
 }
 
-Group::Group(const std::string & name, const Payer & payer): Institution(name), group_payer(Payer(payer))
+Group::Group(const std::string & name, const Payer & payer): Institution(name, payer), group_payer(Payer(payer))
 {
 	create_group_id();
-	this->count_institutions++;
 	this->isValid = true;
 }
 
 Group::Group(const std::string & name): Institution(name), group_payer(Payer()), isValid(false)
 {
 	this->group_id = 0;
-	this->count_institutions++;
 }
 
 bool Group::isGroup() const
@@ -44,6 +41,11 @@ unsigned int Group::getGroupId() const
 	return this->group_id;
 }
 
+const std::string Group::getInstitutionId() const
+{
+	return this->institution_id;
+}
+
 Payer Group::getPayer() const
 {
 	return this->group_payer;
@@ -56,14 +58,14 @@ bool Group::valid() const
 
 bool Group::has_memeber(const Person & p) const
 {
-	if (p.getId() == this->group_id)
+	if (this->group_payer.payer_member_rule(this->group_id, p.getId())) //if there is no payer the payer_member_rule returns false, because no payer exists
 	{
-		std::cout << "This person is part from the group " << this->institution_name << "\n";
+		//std::cout << "This person is part from the group " << this->institution_name << "\n";
 		return true;
 	}
 	else
 	{
-		std::cout << "This person is not part from the group " << this->institution_name << "\n";
+		//std::cout << "This person is not part from the group " << this->institution_name << "\n";
 		return false;
 	}
 }

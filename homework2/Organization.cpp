@@ -4,30 +4,31 @@ void Organization::findPayer()
 {
 	if (institutions_list.empty())
 	{
-		this->organization_payer = Payer();
+		this->institution_payer = Payer();
 		return;
 	}
 
-	std::vector<std::string> groupPayerNames;
-	for (size_t i = 0; i < institutions_list.size(); i++)
-	{
+	std::vector<Payer> groupPayers; // "застраховател на организацията е този с най-много пряко асоциирани групи"
+	for (size_t i = 0; i < institutions_list.size(); i++) // добавяме само групите на първо ниво в йерархията
+	{                                  // ако такива няма долният алгоритъм няма да се изпълни
 		if (institutions_list[i]->isGroup())
 		{
-			groupPayerNames.push_back(institutions_list[i]->getPayer().getName());
+			groupPayers.push_back(institutions_list[i]->getPayer());
 		}
 	}
-
+	
 	//using Boyer–Moore majority vote algorithm to find the most common payer
-	std::string payer = "";
+	Payer payer;
 	int counter = 0;
-	for (size_t i = 0; i < groupPayerNames.size(); i++)
+	
+	for (size_t i = 0; i < groupPayers.size(); i++)
 	{
 		if (counter == 0)
 		{
-			payer = groupPayerNames[i];
+			payer = groupPayers[i];
 			counter = 1;
 		}
-		else if (payer == groupPayerNames[i])
+		else if (payer == groupPayers[i])
 		{
 			counter++;
 		}
@@ -36,8 +37,7 @@ void Organization::findPayer()
 			counter--;
 		}
 	}
-
-	this->organization_payer = Payer(payer, [](int x, int y) {return x == y; });
+	this->institution_payer = payer;
 }
 
 bool Organization::findGroup()
@@ -64,7 +64,7 @@ bool Organization::checkOrganizations(Institution* o)
 	return false;
 }
 
-Organization::Organization():institutions_list(std::vector<Institution*>()), organization_adress(""), organization_payer(Payer())
+Organization::Organization():Institution(), institutions_list(std::vector<Institution*>()), organization_adress("")
 {
 	this->isValid = false;
 }
@@ -73,7 +73,6 @@ Organization::Organization(const std::string& name,std::vector<Institution*> lis
 organization_adress(adress)
 {
 	this->institutions_list = list;
-
 	findPayer();
 	this->isValid=findGroup();
 }
@@ -90,7 +89,17 @@ const std::string Organization::getName() const
 
 Payer Organization::getPayer() const
 {
-	return this->organization_payer;
+	return this->institution_payer;
+}
+
+const std::string Organization::getInstitutionId() const
+{
+	return this->institution_id;
+}
+
+std::vector<Institution*> Organization::getInstitutions() const
+{
+	return this->institutions_list;
 }
 
 bool Organization::valid() const
@@ -106,27 +115,29 @@ bool Organization::has_memeber(const Person & p) const
 		{
 			if (institutions_list[i]->has_memeber(p))
 			{
+				//std::cout << "This person is part from the organization " << this->institution_name << "\n";
 				return true;
 			}
 		}
 		else if(!institutions_list[i]->isGroup())
 		{
-			/*if ()
+			if (institutions_list[i]->has_memeber(p))
 			{
+				//std::cout << "This person is part from the organization " << this->institution_name << "\n";
 				return true;
-			}*/
+			}
 		}
 		
 	}
-
+	//std::cout << "This person is not part from the organization " << this->institution_name << "\n";
 	return false;
 }
 
 Payer * Organization::payer() const
 {
-	if (this->organization_payer.getName() != "no payer")
+	if (this->institution_payer.getName() != "no payer")
 	{
-		return new Payer(this->organization_payer);
+		return new Payer(this->institution_payer);
 	}
 	else
 	{
@@ -138,7 +149,7 @@ void Organization::add_institution(Institution* i, bool ruleAdded)
 {
 	if (ruleAdded)
 	{
-		if (!i->isGroup() && checkOrganizations(i) && i->valid()) // ако не е група, трябва да е съвместима и валидна
+		if (!i->isGroup() && checkOrganizations(i) && i->valid()) // ако не е група е организация и тя трябва да е съвместима и валидна
 		{
 			institutions_list.push_back(i->clone());
 		}

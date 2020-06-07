@@ -21,13 +21,14 @@ protected:
 
 public:
 	Institution();
+	Institution(const std::string& name, const Payer& payer);
 	Institution(const std::string& name);
 	Institution(const Institution& other);
 
 	Institution& operator=(const Institution& other);
 
 	virtual const std::string getName()const = 0;
-	const std::string getId()const;
+	virtual const std::string getInstitutionId()const = 0;
 	virtual Payer getPayer()const = 0;
 
 	virtual bool isGroup() const = 0;
@@ -36,8 +37,6 @@ public:
 	virtual bool has_memeber(const Person& p)const = 0;
 	virtual Payer* payer()const = 0;
 	virtual bool valid()const = 0;
-
-	void print()const;
 
 };
 #endif // !INSTITUTION_H

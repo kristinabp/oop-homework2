@@ -10,7 +10,6 @@ class Organization:
 private:
 	std::vector<Institution*> institutions_list;
 	std::string organization_adress;
-	Payer organization_payer;
 	bool isValid;
 
 	void findPayer();
@@ -25,6 +24,8 @@ public:
 
 	const std::string getName()const;
 	Payer getPayer()const;
+	const std::string getInstitutionId() const;
+	std::vector <Institution*> getInstitutions()const;
 
 	bool valid()const;
 	bool has_memeber(const Person& p)const;

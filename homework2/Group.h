@@ -16,7 +16,7 @@ private:
 
 public:
 	Group();
-	Group(const std::string& name, const Payer& payer);
+	Group(const std::string& name,const Payer& payer);
 	Group(const std::string& name);
 
 	bool isGroup()const;
@@ -24,6 +24,7 @@ public:
 
 	const std::string getName()const;
 	unsigned int getGroupId()const;
+	const std::string getInstitutionId()const;
 	Payer getPayer()const;
 
 	

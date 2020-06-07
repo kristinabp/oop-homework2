@@ -1,6 +1,6 @@
 #include "Payer.h"
 
-Payer::Payer(): payer_name("no payer"), pred(std::function<bool(int, int)>())
+Payer::Payer() : payer_name("no payer"), pred(std::function<bool(int, int)>([] (int, int) { return false; }))
 {
 }
 
@@ -8,9 +8,14 @@ Payer::Payer(const std::string & name, std::function<bool(int, int)> pred):payer
 {
 }
 
-bool Payer::payer_member_rule(int group_id, int person_insurance)
+bool Payer::operator==(const Payer & other) const
 {
-	return pred(group_id, person_insurance);
+	return this->payer_name == other.payer_name;
+}
+
+bool Payer::payer_member_rule(int group_id, int person_insurance)const
+{
+	return this->pred(group_id, person_insurance);
 }
 
 

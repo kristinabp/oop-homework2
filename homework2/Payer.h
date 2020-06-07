@@ -16,7 +16,9 @@ public:
 	Payer();
 	Payer(const std::string& name, std::function<bool(int,int)> pred);
 
-	bool payer_member_rule(int group_id, int person_insurance);
+	bool operator==(const Payer& other)const;
+
+	bool payer_member_rule(int group_id, int person_insurance)const;
 
 	const std::string getName()const;
 

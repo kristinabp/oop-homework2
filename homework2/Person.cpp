@@ -4,6 +4,8 @@ void Person::copy(const Person & other)
 {
 	this->person_name = other.person_name;
 	this->insurance_id = other.insurance_id;
+	this->hasInsurance = other.hasInsurance;
+	this->person_payer = other.person_payer;
 }
 
 Person::Person(): person_payer(Payer())

@@ -34,7 +34,14 @@ void find_most_popular_institution(std::vector<Institution*> i, std::vector<Pers
 		}
 	}
 
-	std::cout << i[curIndex]->getName();
+	if (popularity[curIndex] != 0)
+	{
+		std::cout << i[curIndex]->getName();
+	}
+	else
+	{
+		std::cout << "No users are associated. \n";
+	}
 }
 
 std::vector<Institution*> clear_institutions(std::vector<Institution*> inst)
@@ -54,16 +61,17 @@ std::vector<Institution*> clear_institutions(std::vector<Institution*> inst)
 int main()
 {
 	Payer p1("Bulstrad", [](int x, int y) {return x == y; });
-	Payer p2("Alianz", [](int x, int y) {return x != y; });
+	Payer p2("Alianz", [](int x, int y) {return x == y; });
 	Group g1("G1");
 	Group g2("G2", p1);
 	Group g4("G4", p2);
 	Group g3("G3");
-	Organization o1("O1",{ &g1, &g3 }, "Unknown adress");
-	Organization o2("O2",{},"Another adress");
+	Organization o1("O1",{ &g2, &g3 }, "Unknown adress");
+	Organization o2("O2",{&o1},"Another adress");
 	Person per1("John Smith", p1);
 	Person per2("Jane Smith", p1);
 	Person per3("Erica Smith", p1);
+	Person per4("Erica Smith");
 
 	/*std::vector<Institution*> ins = clear_institutions({ &g2, &g4, &o1, &o2 });
 	for (size_t i = 0; i < ins.size(); i++)
@@ -71,6 +79,8 @@ int main()
 		std::cout << ins[i]->getName() << '\n';
 	}*/
 
-	find_most_popular_institution({ &o1, &o2, &g2, &g4 }, { &per1, &per2, &per3 });
+	//find_most_popular_institution({ &o1, &o2, &g2, &g4 }, { &per1, &per2, &per3 });
+	
+	//o1.has_memeber(per2);
 	return system("pause");
 }
